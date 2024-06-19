@@ -28,10 +28,196 @@
           <td><%= item.categoria %></td>
           <td><%= item.fornecedor %></td>
           <td><%= item.status %></td>
+          <td>
+            <button class="btn btn-primary edit-button" data-bs-toggle="modal" data-bs-target="#editItemModal" data-id="<%= item.id %>" data-nome="<%= item.nome %>" data-descricao="<%= item.descricao %>" data-quantidade="<%= item.quantidade %>" data-preco_unitario="<%= item.preco_unitario %>" data-categoria="<%= item.categoria_id %>" data-fornecedor="<%= item.fornecedor_id %>" data-status="<%= item.status %>">Editar</button>
+            <button class="btn btn-danger delete-button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="<%= item.id %>">Apagar</button>
+          </td>
         </tr>
       <% }); %>
     </tbody>
   </table>
+  <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#addItemModal">Adicionar</button>
 </div>
 
 <%- include('footer.ejs') %>
+
+<!-- Modal para Adicionar Item -->
+<div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addItemModalLabel">Adicionar Novo Item</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/add" method="post">
+          <div class="mb-3">
+            <label for="itemName" class="form-label">Nome do Item:</label>
+            <input type="text" class="form-control" id="itemName" name="nome" placeholder="Nome do Item" required>
+          </div>
+          <div class="mb-3">
+            <label for="itemDescription" class="form-label">Descrição:</label>
+            <textarea class="form-control" id="itemDescription" name="descricao" rows="3" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="itemQuantity" class="form-label">Quantidade:</label>
+            <input type="number" class="form-control" id="itemQuantity" name="quantidade" required>
+          </div>
+          <div class="mb-3">
+            <label for="itemUnitPrice" class="form-label">Preço Unitário:</label>
+            <input type="number" class="form-control" id="itemUnitPrice" name="preco_unitario" step="0.01" required>
+          </div>
+          <div class="mb-3">
+            <label for="itemCategory" class="form-label">Categoria:</label>
+            <select class="form-select" id="itemCategory" name="categoria_id" required>
+              <% categorias.forEach(function(categoria) { %>
+                <option value="<%= categoria.id %>"><%= categoria.nome %></option>
+              <% }); %>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="itemSupplier" class="form-label">Fornecedor:</label>
+            <select class="form-select" id="itemSupplier" name="fornecedor_id" required>
+              <% fornecedores.forEach(function(fornecedor) { %>
+                <option value="<%= fornecedor.id %>"><%= fornecedor.nome %></option>
+              <% }); %>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="itemStatus" class="form-label">Status:</label>
+            <select class="form-select" id="itemStatus" name="status" required>
+              <option value="ativo">Em Estoque</option>
+              <option value="inativo">Fora de Estoque</option>
+            </select>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Salvar Item</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para Editar Item -->
+<div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editItemModalLabel">Editar Item</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/edit" method="post" id="editItemForm">
+          <input type="hidden" id="editItemId" name="id">
+          <div class="mb-3">
+            <label for="editItemName" class="form-label">Nome do Item:</label>
+            <input type="text" class="form-control" id="editItemName" name="nome" required>
+          </div>
+          <div class="mb-3">
+            <label for="editItemDescription" class="form-label">Descrição:</label>
+            <textarea class="form-control" id="editItemDescription" name="descricao" rows="3" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="editItemQuantity" class="form-label">Quantidade:</label>
+            <input type="number" class="form-control" id="editItemQuantity" name="quantidade" required>
+          </div>
+          <div class="mb-3">
+            <label for="editItemUnitPrice" class="form-label">Preço Unitário:</label>
+            <input type="number" class="form-control" id="editItemUnitPrice" name="preco_unitario" step="0.01" required>
+          </div>
+          <div class="mb-3">
+            <label for="editItemCategory" class="form-label">Categoria:</label>
+            <select class="form-select" id="editItemCategory" name="categoria_id" required>
+              <% categorias.forEach(function(categoria) { %>
+                <option value="<%= categoria.id %>"><%= categoria.nome %></option>
+              <% }); %>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="editItemSupplier" class="form-label">Fornecedor:</label>
+            <select class="form-select" id="editItemSupplier" name="fornecedor_id" required>
+              <% fornecedores.forEach(function(fornecedor) { %>
+                <option value="<%= fornecedor.id %>"><%= fornecedor.nome %></option>
+              <% }); %>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="editItemStatus" class="form-label">Status:</label>
+            <select class="form-select" id="editItemStatus" name="status" required>
+              <option value="ativo">Em Estoque</option>
+              <option value="inativo">Fora de Estoque</option>
+            </select>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Salvar Item</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para Confirmar Exclusão -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Confirmar Exclusão</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Tem certeza que deseja excluir este produto?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <form action="/delete" method="post" id="deleteItemForm">
+          <input type="hidden" id="deleteItemId" name="id">
+          <button type="submit" class="btn btn-danger">Excluir</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', (event) => {
+  // Script para editar item
+  var editModal = document.getElementById('editItemModal');
+  editModal.addEventListener('show.bs.modal', function (event) {
+    var button = event.relatedTarget;
+    var id = button.getAttribute('data-id');
+    var nome = button.getAttribute('data-nome');
+    var descricao = button.getAttribute('data-descricao');
+    var quantidade = button.getAttribute('data-quantidade');
+    var preco_unitario = button.getAttribute('data-preco_unitario');
+    var categoria = button.getAttribute('data-categoria');
+    var fornecedor = button.getAttribute('data-fornecedor');
+    var status = button.getAttribute('data-status');
+
+    var form = document.getElementById('editItemForm');
+    form.action = '/edit/' + id;
+
+    form.querySelector('#editItemId').value = id;
+    form.querySelector('#editItemName').value = nome;
+    form.querySelector('#editItemDescription').value = descricao;
+    form.querySelector('#editItemQuantity').value = quantidade;
+    form.querySelector('#editItemUnitPrice').value = preco_unitario;
+    form.querySelector('#editItemCategory').value = categoria;
+    form.querySelector('#editItemSupplier').value = fornecedor;
+    form.querySelector('#editItemStatus').value = status;
+  });
+
+  // Script para configurar o link do botão de confirmação de exclusão
+  var deleteModal = document.getElementById('deleteModal');
+  deleteModal.addEventListener('show.bs.modal', function (event) {
+    var button = event.relatedTarget;
+    var id = button.getAttribute('data-id');
+    var form = document.getElementById('deleteItemForm');
+    form.action = '/delete/' + id;
+    form.querySelector('#deleteItemId').value = id;
+  });
+});
+</script>
