@@ -17,6 +17,27 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 
+//Página de login
+app.get('/login', (req, res) => {
+  res.render('login');
+});
+
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+//Verificando se o usuário é válido
+  try {
+    const result = await conexao.query('SELECT * FROM adm WHERE numero_registro = $1 AND senha = $2', [username, password]);
+    
+    if (result.rows.length > 0) {
+      res.redirect('/home');
+    } else {
+      res.redirect('/login?message=Usuário ou senha incorretos!');
+    }
+  }catch(e){
+    console.log(e)
+  }
+});
 
 //Página home - listagem dos produtos
 app.get('/home', async (req, res) => {
