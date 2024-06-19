@@ -1,0 +1,42 @@
+<%- include('header.ejs') %>
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 offset-md-4">
+      <div class="card mt-5">
+        <div class="card-header">
+          <h3>StockManager Login</h3>
+        </div>
+        <div class="card-body">
+          <form id="loginForm" action="/login" method="post">
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username">
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password">
+            </div>
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Script para exibir mensagem de sucesso ou erro -->
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const message = params.get('message');
+
+  if (message) {
+    alert(message);
+  }
+
+  // Evita que a mensagem seja exibida novamente ao recarregar a página
+  window.history.replaceState({}, document.title, "/login");
+</script>
+
+<%- include('footer.ejs') %>
