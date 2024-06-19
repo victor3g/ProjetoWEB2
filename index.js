@@ -73,6 +73,42 @@ app.get('/home', async (req, res) => {
   }
 });
 
+//Adicionar item
+app.post('/add', async (req, res) => {
+  const { nome, descricao, quantidade, preco_unitario, categoria_id, fornecedor_id, status } = req.body;
+  try {
+    await conexao.query('INSERT INTO produtos (nome, descricao, quantidade, preco_unitario, categoria_id, fornecedor_id, status) VALUES ($1, $2, $3, $4, $5, $6, $7)', 
+      [nome, descricao, quantidade, preco_unitario, categoria_id, fornecedor_id, status]);
+    res.redirect('/home');
+  }catch(e){
+    console.log(e)
+  }
+});
+
+//Editar item
+app.post('/edit/:id', async (req, res) => {
+  const id = req.params.id;
+  const { nome, descricao, quantidade, preco_unitario, categoria_id, fornecedor_id, status } = req.body;
+  try {
+    await conexao.query('UPDATE produtos SET nome = $1, descricao = $2, quantidade = $3, preco_unitario = $4, categoria_id = $5, fornecedor_id = $6, status = $7 WHERE id = $8', 
+      [nome, descricao, quantidade, preco_unitario, categoria_id, fornecedor_id, status, id]);
+    res.redirect('/home');
+  }catch(e){
+    console.log(e)
+  }
+});
+
+//Excluir item
+app.post('/delete/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await conexao.query('DELETE FROM produtos WHERE id = $1', [id]);
+    res.redirect('/home');
+  }catch(e){
+    console.log(e)
+  }
+});
+
 //Rodando o servidor
 app.listen(3000, function(){
   console.log('O Servidor está online na porta 3000');
