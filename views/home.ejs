@@ -1,0 +1,37 @@
+<%- include('header.ejs') %>
+<%- include('menu.ejs') %>
+
+<div id="main-content">
+  <h2>Lista de Itens</h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Descrição</th>
+        <th>Quantidade</th>
+        <th>Preço Unitário</th>
+        <th>Categoria</th>
+        <th>Fornecedor</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% itens.forEach(item => { %>
+        <tr>
+          <td><%= item.id %></td>
+          <td><%= item.nome %></td>
+          <td><%= item.descricao %></td>
+          <td><%= item.quantidade %></td>
+          <td><%= item.preco_unitario %></td>
+          <td><%= item.categoria %></td>
+          <td><%= item.fornecedor %></td>
+          <td><%= item.status %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('footer.ejs') %>
