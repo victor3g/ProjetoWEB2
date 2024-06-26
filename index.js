@@ -73,6 +73,47 @@ app.get('/home', async (req, res) => {
   }
 });
 
+//Pesquisar item
+app.get('/pesquisa', async (req, res) => {
+  try {
+    const palavraPesquisada = req.query.query;
+
+    const query = `
+      SELECT 
+        produtos.id AS id,
+        produtos.nome AS nome,
+        produtos.descricao AS descricao,
+        produtos.quantidade AS quantidade,
+        produtos.preco_unitario AS preco_unitario,
+        categorias.id AS categoria_id,
+        categorias.nome AS categoria,
+        fornecedores.id AS fornecedor_id,
+        fornecedores.nome AS fornecedor,
+        produtos.status AS status
+      FROM 
+        produtos
+      INNER JOIN categorias ON produtos.categoria_id = categorias.id
+      INNER JOIN fornecedores ON produtos.fornecedor_id = fornecedores.id
+      WHERE 
+        LOWER(produtos.nome) LIKE LOWER($1) OR
+        LOWER(produtos.descricao) LIKE LOWER($1)
+    `;
+
+    const result = await conexao.query(query, [`%${palavraPesquisada}%`]);
+
+    const itens = result.rows;
+    const categoriasResult = await conexao.query('SELECT id, nome FROM categorias ORDER BY nome');
+    const fornecedoresResult = await conexao.query('SELECT id, nome FROM fornecedores ORDER BY nome');
+
+    const categorias = categoriasResult.rows;
+    const fornecedores = fornecedoresResult.rows;
+
+    res.render('pesquisa', { itens, categorias, fornecedores });
+  }catch(e){
+    console.log(e)
+  }
+});
+
 //Adicionar item
 app.post('/add', async (req, res) => {
   const { nome, descricao, quantidade, preco_unitario, categoria_id, fornecedor_id, status } = req.body;
@@ -91,6 +132,21 @@ app.post('/addf', async (req, res) => {
   try {
     await conexao.query('INSERT INTO fornecedores (nome, contato, endereco) VALUES ($1, $2, $3)', [nome, contato, endereco]);
     res.redirect('/home');
+  }catch(e){
+    console.log(e)
+  }
+});
+
+//Mostrar registros - COMPRA E VENDA
+app.get('/registros', async (req, res) => {
+  try {
+    const result = await conexao.query(`
+            SELECT acoes_estoque.id, produtos.nome AS produto, acoes_estoque.acao, acoes_estoque.quantidade, acoes_estoque.data, acoes_estoque.descricao
+            FROM acoes_estoque
+            JOIN produtos ON acoes_estoque.produto_id = produtos.id
+        `);
+
+    res.render('registros', { registros: result.rows });
   }catch(e){
     console.log(e)
   }

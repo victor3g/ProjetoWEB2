@@ -1,0 +1,32 @@
+<%- include('header.ejs') %>
+<%- include('menuR.ejs') %>
+
+<div id="main-content">
+  <h2>Lista de Registros</h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Produto</th>
+        <th>Ação</th>
+        <th>Quantidade</th>
+        <th>Data e hora</th>
+        <th>Descrição</th>
+      </tr>
+    </thead>
+    <tbody>
+        <% registros.forEach(registro => { %>
+        <tr>
+            <td><%= registro.id %></td>
+            <td><%= registro.produto %></td>
+            <td><%= registro.acao %></td>
+            <td><%= registro.quantidade %></td>
+            <td><%= registro.data %></td>
+            <td><%= registro.descricao %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('footer.ejs') %>
