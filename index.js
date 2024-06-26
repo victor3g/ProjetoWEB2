@@ -1,10 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+const axios = require('axios');
+
 
 const { Pool } = require("pg");
 
 const url_bancoDeDados = 'postgresql://neondb_owner:bMi6tQ9UkqvC@ep-black-sunset-a5k73eqv.us-east-2.aws.neon.tech/neondb?sslmode=require'
+
+const API_KEY = 'EQpyDp8izpb5BfnQWqQmEiYFC3cbOnpG';
 
 const conexao = new Pool({
   connectionString: url_bancoDeDados,
@@ -146,6 +150,26 @@ app.get('/registros', async (req, res) => {
             JOIN produtos ON acoes_estoque.produto_id = produtos.id
         `);
 
+    res.render('registros', { registros: result.rows });
+  }catch(e){
+    console.log(e)
+  }
+});
+
+//Pesquisar registros - COMPRA E VENDA
+app.get('/registros', async (req, res) => {
+
+  const palavraPesquisada = req.query.query2;
+  try {
+    const query =`
+            SELECT acoes_estoque.id, produtos.nome AS produto, acoes_estoque.acao, acoes_estoque.quantidade, acoes_estoque.data, acoes_estoque.descricao
+            FROM acoes_estoque
+            JOIN produtos ON acoes_estoque.produto_id = produtos.id
+            WHERE 
+            LOWER(produtos.nome) LIKE LOWER($1)
+        `;
+
+    const result = await conexao.query(query, [`%${palavraPesquisada}%`]);
     res.render('registros', { registros: result.rows });
   }catch(e){
     console.log(e)
