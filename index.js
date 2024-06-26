@@ -85,6 +85,17 @@ app.post('/add', async (req, res) => {
   }
 });
 
+//Adicionar fornecedor
+app.post('/addf', async (req, res) => {
+  const { nome, contato, endereco } = req.body;
+  try {
+    await conexao.query('INSERT INTO fornecedores (nome, contato, endereco) VALUES ($1, $2, $3)', [nome, contato, endereco]);
+    res.redirect('/home');
+  }catch(e){
+    console.log(e)
+  }
+});
+
 //Editar item
 app.post('/edit/:id', async (req, res) => {
   const id = req.params.id;
