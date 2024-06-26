@@ -1,0 +1,57 @@
+<%- include('header.ejs') %>
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 offset-md-4">
+      <div class="card mt-5">
+        <div class="card-header">
+          <h3>StockManager Login</h3>
+          <p id="current-time" class="text-muted"></p>
+        </div>
+        <div class="card-body">
+          <form id="loginForm" action="/login" method="post">
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username">
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password">
+            </div>
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const timeElement = document.getElementById('current-time');
+
+    // Função para obter e exibir o horário atual
+    function getCurrentTime() {
+        fetch('https://worldtimeapi.org/api/ip')
+            .then(response => response.json())
+            .then(data => {
+                const datetime = new Date(data.datetime);
+                const formattedTime = datetime.toLocaleString({
+                    timeZone: data.timezone,
+                    hour: 'numeric',
+                    minute: 'numeric',
+                });
+                timeElement.textContent = `${formattedTime}`;
+            })
+            .catch(error => {
+                console.error('Erro ao obter o horário:', error);
+            });
+    }
+    getCurrentTime();
+    setInterval(getCurrentTime, 1000);
+});
+
+</script>
+
+<%- include('footer.ejs') %>
